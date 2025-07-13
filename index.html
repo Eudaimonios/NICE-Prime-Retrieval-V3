@@ -9,7 +9,7 @@
   body {
     margin: 0; 
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: radial-gradient(circle at center, #2a1a5e 0%, #0a0a2f 50%, #000000 100%);
+    background: radial-gradient(circle at center, #1a0b3b 0%, #000000 70%);
     color: #ddd;
     max-width: 900px;
     margin-left: auto;
@@ -83,7 +83,7 @@
   }
 
   button:disabled {
-    background-color copied: #555;
+    background-color: #555;
     cursor: default;
     color: #999;
   }
@@ -207,7 +207,7 @@
       <tr><td>100 – 999</td><td><strong>Bhikṣu</strong></td><td>Apprentice's <em>Subtle‑Sense Activation</em></td><td>Synchronicity spotting, symbolic decoding</td></tr>
       <tr><td>1,000 – 9,999</td><td><strong>Arahant</strong></td><td>Adept's <em>Shadow‑Integration & Resilience</em></td><td>Lucid dreaming, inner‑archetype dialogues</td></tr>
       <tr><td>10,000 – 99,999</td><td><strong>Bodhisattva</strong></td><td>Visionary <em>Non‑Local Consciousness Access</em></td><td>Telepathic inklings, transpersonal insights</td></tr>
-      <tr><td>100,000 – 999,999</td><td><strong>Buddha</strong></td><td>Master's <em>Embodied Co‑Creative Flow</em></td><td>Healing presence, guided co‑creation with Source</td></tr>
+      <tr><td>100,000 – 999,999</td><td><strong>B  <strong>Buddha</strong></td><td>Master's <em>Embodied Co‑Creative Flow</em></td><td>Healing presence, guided co‑creation with Source</td></tr>
     </tbody>
   </table>
 </section>
@@ -376,72 +376,70 @@
     const particles = [];
     const stars = [];
     const galaxies = [];
-    const numParticles = 200;
-    const numStars = 300;
-    const numGalaxies = 5;
+    const numParticles = 150;
+    const numStars = 200;
+    const numGalaxies = 3;
 
     // Create particles (radiating from center)
     for (let i = 0; i < numParticles; i++) {
       const angle = Math.random() * 2 * Math.PI;
-      const speed = Math.random() * 4 + 2;
+      const speed = Math.random() * 2 + 1;
       particles.push({
         x: centerX,
         y: centerY,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
-        size: Math.random() * 3 + 1.5,
-        opacity: Math.random() * 0.6 + 0.4,
+        size: Math.random() * 2 + 1,
+        opacity: Math.random() * 0.4 + 0.2,
         life: 0,
-        maxLife: 80,
+        maxLife: 120,
         color: Math.random() < 0.5 ? '255, 215, 0' : '255, 255, 255'
       });
     }
 
-    // Create stars (radiating with subtle motion)
+    // Create stars (with subtle glow)
     for (let i = 0; i < numStars; i++) {
       const dist = Math.random() * 300 + 50;
       const angle = Math.random() * 2 * Math.PI;
       stars.push({
         x: centerX + Math.cos(angle) * dist,
         y: centerY + Math.sin(angle) * dist,
-        vx: Math.cos(angle) * 0.2,
-        vy: Math.sin(angle) * 0.2,
-        size: Math.random() * 3 + 1,
-        opacity: Math.random() * 0.6 + 0.4,
-        twinkle: Math.random() * 100,
-        color: Math.random() < 0.7 ? '255, 255, 255' : Math.random() < 0.9 ? '200, 200, 255' : '255, 215, 0'
+        vx: Math.cos(angle) * 0.1,
+        vy: Math.sin(angle) * 0.1,
+        size: Math.random() * 2 + 1,
+        opacity: Math.random() * 0.5 + 0.5,
+        color: '255, 255, 255'
       });
     }
 
-    // Create galaxies (spirals radiating from center)
+    // Create galaxies (simplified single-arm spirals)
     for (let i = 0; i < numGalaxies; i++) {
       const dist = Math.random() * 200 + 100;
       const angle = Math.random() * 2 * Math.PI;
       galaxies.push({
         x: centerX + Math.cos(angle) * dist,
         y: centerY + Math.sin(angle) * dist,
-        vx: Math.cos(angle) * 0.5,
-        vy: Math.sin(angle) * 0.5,
-        size: Math.random() * 80 + 60,
+        vx: Math.cos(angle) * 0.3,
+        vy: Math.sin(angle) * 0.3,
+        size: Math.random() * 60 + 40,
         rotation: Math.random() * 2 * Math.PI,
-        speed: (Math.random() * 0.03 + 0.02) * (Math.random() > 0.5 ? 1 : -1)
+        speed: (Math.random() * 0.01 + 0.005) * (Math.random() > 0.5 ? 1 : -1)
       });
     }
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw central light source
-      const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 150);
-      gradient.addColorStop(0, 'rgba(255, 245, 200, 1)');
-      gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.8)');
+      // Draw central light source (soft and pulsating)
+      const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 120);
+      gradient.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
       gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
       ctx.fillStyle = gradient;
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 150 + Math.sin(Date.now() / 800) * 20, 0, 2 * Math.PI);
+      ctx.arc(centerX, centerY, 120 + Math.sin(Date.now() / 1500) * 15, 0, 2 * Math.PI);
       ctx.fill();
 
-      // Draw galaxies
+      // Draw galaxies (single-arm spirals with soft glow)
       galaxies.forEach(galaxy => {
         galaxy.x += galaxy.vx;
         galaxy.y += galaxy.vy;
@@ -449,30 +447,29 @@
           const angle = Math.random() * 2 * Math.PI;
           galaxy.x = centerX + Math.cos(angle) * 100;
           galaxy.y = centerY + Math.sin(angle) * 100;
-          galaxy.vx = Math.cos(angle) * 0.5;
-          galaxy.vy = Math.sin(angle) * 0.5;
+          galaxy.vx = Math.cos(angle) * 0.3;
+          galaxy.vy = Math.sin(angle) * 0.3;
         }
         ctx.save();
         ctx.translate(galaxy.x, galaxy.y);
         ctx.rotate(galaxy.rotation);
         const spiralGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, galaxy.size);
-        spiralGradient.addColorStop(0, 'rgba(200, 180, 255, 0.8)');
-        spiralGradient.addColorStop(0.5, 'rgba(150, 150, 255, 0.5)');
+        spiralGradient.addColorStop(0, 'rgba(200, 180, 255, 0.5)');
         spiralGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
         ctx.fillStyle = spiralGradient;
         ctx.beginPath();
         ctx.moveTo(0, 0);
-        for (let i = 0; i < 720; i += 10) {
+        for (let i = 0; i < 360; i += 5) {
           const rad = (i * Math.PI) / 180;
-          const r = (galaxy.size * i) / 720;
+          const r = (galaxy.size * i) / 360;
           ctx.lineTo(r * Math.cos(rad), r * Math.sin(rad));
         }
         ctx.fill();
         ctx.restore();
-        galaxy.rotation += galaxy.speed / 60;
+        galaxy.rotation += galaxy.speed;
       });
 
-      // Draw stars
+      // Draw stars (with subtle glow)
       stars.forEach(star => {
         star.x += star.vx;
         star.y += star.vy;
@@ -480,17 +477,19 @@
           const angle = Math.random() * 2 * Math.PI;
           star.x = centerX + Math.cos(angle) * 50;
           star.y = centerY + Math.sin(angle) * 50;
-          star.vx = Math.cos(angle) * 0.2;
-          star.vy = Math.sin(angle) * 0.2;
+          star.vx = Math.cos(angle) * 0.1;
+          star.vy = Math.sin(angle) * 0.1;
         }
-        const twinkle = Math.sin((Date.now() + star.twinkle) / 100) * 0.4 + star.opacity;
-        ctx.fillStyle = `rgba(${star.color}, ${twinkle})`;
+        const starGradient = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.size * 1.5);
+        starGradient.addColorStop(0, `rgba(${star.color}, ${star.opacity})`);
+        starGradient.addColorStop(1, `rgba(${star.color}, 0)`);
+        ctx.fillStyle = starGradient;
         ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, 2 * Math.PI);
+        ctx.arc(star.x, star.y, star.size * 1.5, 0, 2 * Math.PI);
         ctx.fill();
       });
 
-      // Draw and update particles
+      // Draw and update particles (linear motion)
       particles.forEach(particle => {
         particle.x += particle.vx;
         particle.y += particle.vy;
@@ -500,7 +499,7 @@
           particle.y = centerY;
           particle.life = 0;
           const angle = Math.random() * 2 * Math.PI;
-          const speed = Math.random() * 4 + 2;
+          const speed = Math.random() * 2 + 1;
           particle.vx = Math.cos(angle) * speed;
           particle.vy = Math.sin(angle) * speed;
         }
