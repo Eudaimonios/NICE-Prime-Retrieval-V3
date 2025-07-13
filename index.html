@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NICE Prime-Retrieval App</title>
+<style>
+  /* Base & layout */
+  body {
+    margin: 0; 
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #111;
+    color: #ddd;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    line-height: 1.5;
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    text-align: center;
+    color: #ffd700;
+    margin-bottom: 0.3em;
+    user-select: none;
+  }
+
+  p, ul {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  ul.bullet {
+    list-style-type: disc;
+    margin-left: 2em;
+    margin-bottom: 1.2em;
+  }
+
+  code {
+    background: #333;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+    user-select: text;
+  }
+
+  a {
+    color: #ffd700;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* Buttons & inputs */
+  button, select, input[type=number] {
+    font-size: 1rem;
+    padding: 10px 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    width: 100%;
+    max-width: 350px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #222;
+    color: #ffd700;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    user-select: none;
+  }
+
+  button:hover, select:hover, input[type=number]:hover {
+    background-color: #444;
+  }
+
+  button:disabled {
+    background-color: #555;
+    cursor: default;
+    color: #999;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 40px;
+    user-select: none;
+  }
+
+  .encourage {
+    font-style: italic;
+    color: #aaa;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  #results {
+    background: #222;
+    border-radius: 8px;
+    padding: 15px;
+    font-weight: 600;
+    color: #ffd700;
+    user-select: text;
+  }
+
+  /* History and graph container */
+  #historyContainer {
+    background: #222;
+    border-radius: 8px;
+    padding: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+    color: #ccc;
+    font-size: 0.9rem;
+  }
+
+  #trendCanvas {
+    display: block;
+    margin: 15px auto;
+    background: #111;
+    border: 1px solid #444;
+    border-radius: 8px;
+  }
+
+  /* Table for stages */
+  table {
+    border-collapse: collapse;
+    width: 90%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #eee;
+    user-select: text;
+  }
+
+  th, td {
+    border: 1px solid #444;
+    padding: 10px 15px;
+    text-align: center;
+  }
+
+  th {
+    background-color: #333;
+    color: #ffd700;
+  }
+
+  /* Ambient visual: subtle floating particles */
+  #ambientCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Footer */
+  footer {
+    font-size: 0.8rem;
+    color: #777;
+    text-align: center;
+    margin-top: 50px;
+    user-select: none;
+  }
+
+  footer em {
+    font-style: italic;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- Ambient canvas for subtle visuals -->
+<canvas id="ambientCanvas"></canvas>
+
+<h1>NICE Prime‑Retrieval</h1>
+<p style="text-align:center; font-style: italic; margin-top: -1em; margin-bottom: 2em; color:#bbb;">
+  Train your intuition. Verify with science.
+</p>
+
+<!-- 1. Concept Overview -->
+<section class="section" id="conceptOverview">
+  <h2>About NICE</h2>
+  <p><strong>NICE</strong> stands for <strong>Neurophenomenological Integrated Comparative Empiricism</strong>. It’s a convergent framework and platform that unites <em>first‑person experience</em> (intuitive symbols, insights) with <em>third‑person data</em> (accuracy scores, statistical baselines), allowing practitioners to compare and track progress across spiritual disciplines via a shared, verifiable protocol.</p>
+  <p><strong>Aim:</strong> To cultivate <em>inner clarity</em> and <em>outer accountability</em>, mapping real shifts in consciousness and deepening our collective understanding of reality.</p>
+</section>
+
+<!-- 1.2 Difficulty Selector Table -->
+<section class="section" id="difficultyStageOverview">
+  <h2>Choose Your Path</h2>
+  <table aria-label="Spiritual stages and prime ranges">
+    <thead>
+      <tr>
+        <th>Stage Range</th>
+        <th>Name</th>
+        <th>Core Capacity Developed</th>
+        <th>Next Signs Enabled</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1 – 99</td><td><strong>Sādhyāka</strong></td><td>Beginner’s <em>Mind‑Clearing & Stability</em></td><td>Basic breath tracking, noticing thought‑streams</td></tr>
+      <tr><td>100 – 999</td><td><strong>Bhikṣu</strong></td><td>Apprentice’s <em>Subtle‑Sense Activation</em></td><td>Synchronicity spotting, symbolic decoding</td></tr>
+      <tr><td>1,000 – 9,999</td><td><strong>Arahant</strong></td><td>Adept’s <em>Shadow‑Integration & Resilience</em></td><td>Lucid dreaming, inner‑archetype dialogues</td></tr>
+      <tr><td>10,000 – 99,999</td><td><strong>Bodhisattva</strong></td><td>Visionary <em>Non‑Local Consciousness Access</em></td><td>Telepathic inklings, transpersonal insights</td></tr>
+      <tr><td>100,000 – 999,999</td><td><strong>Buddha</strong></td><td>Master’s <em>Embodied Co‑Creative Flow</em></td><td>Healing presence, guided co‑creation with Source</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 2. Pre-Retrieval Guidance -->
+<section class="section" id="preRetrievalGuidance">
+  <h2>Pre-Retrieval Guidance</h2>
+  <p><em>Optional Preparations (brief checklist):</em></p>
+  <ul class="bullet">
+    <li>Warm shower (mind purification)</li>
+    <li>2–4 hr light fast (clarity)</li>
+    <li>5 min asanas & pranayama (energy alignment)</li>
+    <li>Plain herbal tea (no sugar/milk)</li>
+    <li>30 sec gratitude & surrender (devotional opening)</li>
+  </ul>
+</section>
+
+<!-- 3. Retrieval Screen -->
+<section class="section" id="retrievalSection">
+  <h2>Revelatory Retrieval</h2>
+  <p style="text-align:center; font-weight: 600; font-size: 1.1rem;" id="stageNameDisplay">Stage: —</p>
+  <p style="max-width: 600px; margin-left: auto; margin-right: auto; font-style: italic; text-align:center; user-select:none;">
+    Sit quietly. Breathe deeply. Intone:<br/>
+    <code>“I surrender to the One Source. Reveal the <span id="primeIndexDisplay">n</span>-th prime.”</code><br/>
+    Observe symbols, digits, or impressions.
+  </p>
+
+  <label for="difficultySelect" style="display:block; max-width:350px; margin: 20px auto 0 auto; user-select:none;">Select Your Stage</label>
+  <select id="difficultySelect" aria-label="Choose your spiritual stage">
+    <option value="1">Sādhyāka (1 – 99)</option>
+    <option value="2">Bhikṣu (100 – 999)</option>
+    <option value="3">Arahant (1,000 – 9,999)</option>
+    <option value="4">Bodhisattva (10,000 – 99,999)</option>
+    <option value="5">Buddha (100,000 – 999,999)</option>
+  </select>
+
+  <button id="startRetrievalBtn">Summon My Prime</button>
+
+  <p id="retrievalStatus" style="text-align:center; margin-top: 1em; font-weight: 600; color: #aaf;"></p>
+
+  <div id="timerSection" style="display:none; text-align:center; margin-top:1em; color:#777; user-select:none;">
+    Silent timer: <span id="timerCountdown">0</span> sec
+  </div>
+
+  <div id="inputSection" style="display:none; margin-top: 1.5em; max-width: 350px; margin-left:auto; margin-right:auto;">
+    <label for="userGuess" style="display:block; margin-bottom: 5px;">Enter the prime you received:</label>
+    <input type="number" id="userGuess" placeholder="Your recalled prime number" autocomplete="off" />
+    <button id="testSignalBtn">Test My Signal!</button>
+  </div>
+</section>
+
+<!-- 4. Results Screen -->
+<section class="section" id="resultsSection" style="display:none;">
+  <h2>Performance Feedback</h2>
+  <div id="results"></div>
+  <div class="encourage">Stay the path—each session sharpens your receiver.</div>
+  <p style="text-align:center; margin-top:1em;">
+    <button id="shareBtn">Share My Results</button>
+  </p>
+</section>
+
+<!-- 5. Dashboard & Community -->
+<section class="section" id="dashboardSection">
+  <h2>Session History & Trend</h2>
+  <div id="historyContainer" aria-live="polite" aria-label="History of your retrieval sessions">
+    No sessions recorded yet.
+  </div>
+  <canvas id="trendCanvas" width="700" height="150" aria-label="Trend graph showing percentage closeness over time"></canvas>
+</section>
+
+<!-- 6. Footer -->
+<footer>
+  <p><em>Science Note:</em> Primes underlie cryptography, randomness, and the hidden symmetries of nature.</p>
+  <p><em>Spiritual Note:</em> Retrieving primes through gratitude and surrender aligns consciousness with reality’s deep code.</p>
+</footer>
+
+<script>
+  // Prime generation with sieve of Eratosthenes (up to 1 million)
+  const primeList = [];
+  function generatePrimesUpTo(limit) {
+    const sieve = new Array(limit + 1).fill(true);
+    sieve[0] = sieve[1] = false;
+    for (let i = 2; i * i <= limit; i++) {
+      if (sieve[i]) {
+        for (let j = i * i; j <= limit; j += i) {
+          sieve[j] = false;
+        }
+      }
+    }
+    for (let i = 2; i <= limit; i++) {
+      if (sieve[i]) primeList.push(i);
+    }
+  }
+  generatePrimesUpTo(1000000);
+
+  // Stage data: ranges, names, next signs for display and logic
+  const stages = {
+    1: { name: "Sādhyāka", range: [1, 99] },
+    2: { name: "Bhikṣu", range: [100, 999] },
+    3: { name: "Arahant", range: [1000, 9999] },
+    4: { name: "Bodhisattva", range: [10000, 99999] },
+    5: { name: "Buddha", range: [100000, 999999] }
+  };
+
+  // State
+  let selectedPrime = null;
+  let selectedPrimeIndex = null;
+  let currentStage = 1;
+  let silentTimer = null;
+  let sessionHistory = JSON.parse(localStorage.getItem('niceSessionHistory') || '[]');
+
+  // Elements
+  const difficultySelect = document.getElementById('difficultySelect');
+  const stageNameDisplay = document.getElementById('stageNameDisplay');
+  const primeIndexDisplay = document.getElementById('primeIndexDisplay');
+  const startRetrievalBtn = document.getElementById('startRetrievalBtn');
+  const retrievalStatus = document.getElementById('retrievalStatus');
+  const inputSection = document.getElementById('inputSection');
+  const userGuessInput = document.getElementById('userGuess');
+  const testSignalBtn = document.getElementById('testSignalBtn');
+  const resultsSection = document.getElementById('resultsSection');
+  const resultsDiv = document.getElementById('results');
+  const shareBtn = document.getElementById('shareBtn');
+  const historyContainer = document.getElementById('historyContainer');
+  const trendCanvas = document.getElementById('trendCanvas');
+  const timerSection = document.getElementById('timerSection');
+  const timerCountdown = document.getElementById('timerCountdown');
+
+  // Init
+  function init() {
+    currentStage = parseInt(difficultySelect.value);
+    stageNameDisplay.textContent = `Stage: ${stages[currentStage].name}`;
+    primeIndexDisplay.textContent = "n";
+    retrievalStatus.textContent = "";
+    inputSection.style.display = 'none';
+    resultsSection.style.display = 'none';
+    updateHistoryUI();
+    drawTrendChart();
+  }
+  init();
+
+  difficultySelect.addEventListener('change', () => {
+    currentStage = parseInt(difficultySelect.value);
+    stageNameDisplay.textContent = `Stage: ${stages[currentStage].name}`;
+    retrievalStatus.textContent = "";
+    primeIndexDisplay.textContent = "n";
+    inputSection.style.display = 'none';
+    resultsSection.style.display = 'none';
+    clearTimer();
+  });
+
+  startRetrievalBtn.addEventListener('click', () => {
+    retrievalStatus.textContent = "Preparing your prime index...";
+    inputSection.style.display = 'none';
+    resultsSection.style.display = 'none';
+    userGuessInput.value = "";
+    clearTimer();
+
+    const [minVal, maxVal] = stages[currentStage].range;
+
+    // Find indices of primes within the range (filter primes by value)
+    const candidates = primeList.filter(p => p >= minVal && p <= maxVal);
+    if (candidates.length === 0) {
+      retrievalStatus.textContent = "No primes found in this range.";
+      return;
+    }
+
+    // Randomly pick one prime from candidates
+    const randomIdxInCandidates = Math.floor(Math.random() * candidates.length);
+    selectedPrime = candidates[randomIdxInCandidates];
+    // Find its index (order) in primeList (1-based)
+    selectedPrimeIndex = primeList.indexOf(selectedPrime) + 1;
+
+    // Hide index (n) initially, just say index is set
+    retrievalStatus.textContent = "Your index (n) is set. Begin your practice.";
+    primeIndexDisplay.textContent = "—";
+
+    // Start silent timer before showing input: random between 2-5 mins (120-300 sec)
+    const waitSeconds = 120 + Math.floor(Math.random() * 181); // 120 to 300 seconds
+    let secondsLeft = waitSeconds;
+
+    timerCountdown.textContent = secondsLeft;
+    timerSection.style.display = "block";
+
+    silentTimer = setInterval(() => {
+      secondsLeft--;
+      timerCountdown.textContent = secondsLeft;
+      if (secondsLeft <= 0) {
+        clearTimer();
+        timerSection.style.display = "none";
+        // Show the index for input & enable input
+        primeIndexDisplay.textContent = selectedPrimeIndex;
+        inputSection.style.display = "block";
+        retrievalStatus.textContent = "Enter your retrieved prime below.";
+      }
+    }, 1000);
+  });
+
+  function clearTimer() {
+    if (silentTimer) {
+      clearInterval(silentTimer);
+      silentTimer = null;
+      timerSection.style.display = "none";
+    }
+  }
+
+  testSignalBtn.addEventListener('click', () => {
+    const guess = parseInt(userGuessInput.value);
+    if (!selectedPrime || isNaN(guess)) {
+      alert("Please enter a valid number.");
+      return;
+    }
+
+    const actual = selectedPrime;
+    const absError = Math.abs(guess - actual);
+    const percentCloseness = Math.max(0, (1 - absError / actual)) * 100;
+
+    // Estimate random chance σ-score (simplified)
+    // Using uniform random chance baseline and standard deviation
+    const [minVal, maxVal] = stages[currentStage].range;
+    const rangeWidth = maxVal - minVal + 1;
+    // Approximate
