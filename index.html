@@ -1,184 +1,802 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NICE Prime‑Retrieval App</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 900px;
-      margin: 40px auto;
-      line-height: 1.6;
-      padding: 0 20px;
-      background: linear-gradient(to bottom, #f8f8f8, #e0e7ff);
-    }
-    h1, h2, h3 { text-align: center; }
-    .section { margin-bottom: 30px; }
-    select, button, input {
-      padding: 8px;
-      margin: 10px 0;
-      font-size: 1rem;
-      width: 100%;
-    }
-    #primeDisplay, #results {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    #results {
-      background: #f0f0f0;
-      padding: 10px;
-      border-radius: 5px;
-    }
-    .encourage {
-      margin-top: 20px;
-      font-style: italic;
-      text-align: center;
-    }
-    .bullet { margin-left: 20px; }
-    code {
-      background: #e4e4e4;
-      padding: 2px 4px;
-      border-radius: 3px;
-    }
-    .ambient-bg {
-      background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
-      background-blend-mode: overlay;
-    }
-    .overview {
-      background-color: #fff8f2;
-      padding: 15px;
-      border-left: 4px solid #8884d8;
-      border-radius: 5px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NICE Prime-Retrieval App</title>
+<style>
+  /* Base & layout */
+  body {
+    margin: 0; 
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(circle at center, #2a1a5e 0%, #0a0a2f 50%, #000000 100%);
+    color: #ddd;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    line-height: 1.5;
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    text-align: center;
+    color: #ffd700;
+    margin-bottom: 0.3em;
+    user-select: none;
+  }
+
+  p, ul {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  ul.bullet {
+    list-style-type: disc;
+    margin-left: 2em;
+    margin-bottom: 1.2em;
+  }
+
+  code {
+    background: #333;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+    user-select: text;
+  }
+
+  a {
+    color: #ffd700;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* Buttons & inputs */
+  button, select, input[type=number] {
+    font-size: 1rem;
+    padding: 10px 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    width: 100%;
+    max-width: 350px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #222;
+    color: #ffd700;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    user-select: none;
+  }
+
+  button:hover, select:hover, input[type=number]:hover {
+    background-color: #444;
+  }
+
+  button:disabled {
+    background-color copied: #555;
+    cursor: default;
+    color: #999;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 40px;
+    user-select: none;
+  }
+
+  .encourage {
+    font-style: italic;
+    color: #aaa;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  #results {
+    background: #222;
+    border-radius: 8px;
+    padding: 15px;
+    font-weight: 600;
+    color: #ffd700;
+    user-select: text;
+  }
+
+  /* History and graph container */
+  #historyContainer {
+    background: #222;
+    border-radius: 8px;
+    padding: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+    color: #ccc;
+    font-size: 0.9rem;
+  }
+
+  #trendCanvas {
+    display: block;
+    margin: 15px auto;
+    background: #111;
+    border: 1px solid #444;
+    border-radius: 8px;
+  }
+
+  /* Table for stages */
+  table {
+    border-collapse: collapse;
+    width: 90%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #eee;
+    user-select: text;
+  }
+
+  th, td {
+    border: 1px solid #444;
+    padding: 10px 15px;
+    text-align: center;
+  }
+
+  th {
+    background-color: #333;
+    color: #ffd700;
+  }
+
+  /* Ambient visual: cosmic canvas */
+  #ambientCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Footer */
+  footer {
+    font-size: 0.8rem;
+    color: #777;
+    text-align: center;
+    margin-top: 50px;
+    user-select: none;
+  }
+
+  footer em {
+    font-style: italic;
+  }
+</style>
 </head>
-<body class="ambient-bg">
-  <h1>NICE Prime‑Retrieval</h1>
-  <p style="text-align:center; font-style:italic;">Train your intuition. Verify with science.</p>
+<body>
+<!-- Ambient canvas for cosmic visuals -->
+<canvas id="ambientCanvas"></canvas>
 
-  <div class="overview section">
-    <h3>About NICE</h3>
-    <p><strong>NICE</strong> = <em>Neurophenomenological Integrated Comparative Empiricism</em></p>
-    <p>It integrates first‑person insight and third‑person validation. A rigorous framework to measure and refine spiritual cognition across practitioner levels.</p>
+<h1>NICE Prime‑Retrieval</h1>
+<p style="text-align:center; font-style: italic; margin-top: -1em; margin-bottom: 2em; color:#bbb;">
+  Train your intuition. Verify with science.
+</p>
+
+<!-- 1. Concept Overview -->
+<section class="section" id="conceptOverview">
+  <h2>About NICE</h2>
+  <p><strong>NICE</strong> stands for <strong>Neurophenomenological Integrated Comparative Empiricism</strong>. It's a convergent framework and platform that unites <em>first‑person experience</em> (intuitive symbols, insights) with <em>third‑person data</em> (accuracy scores, statistical baselines), allowing practitioners to compare and track progress across spiritual disciplines via a shared, verifiable protocol.</p>
+  <p><strong>Aim:</strong> To cultivate <em>inner clarity</em> and <em>outer accountability</em>, mapping real shifts in consciousness and deepening our collective understanding of reality.</p>
+</section>
+
+<!-- 1.2 Difficulty Selector Table -->
+<section class="section" id="difficultyStageOverview">
+  <h2>Choose Your Path</h2>
+  <table aria-label="Spiritual stages and prime ranges">
+    <thead>
+      <tr>
+        <th>Stage Range</th>
+        <th>Name</th>
+        <th>Core Capacity Developed</th>
+        <th>Next Signs Enabled</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>0 – 99</td><td><strong>Sādhyāka</strong></td><td>Beginner's <em>Mind‑Clearing & Stability</em></td><td>Basic breath tracking, noticing thought‑streams</td></tr>
+      <tr><td>100 – 999</td><td><strong>Bhikṣu</strong></td><td>Apprentice's <em>Subtle‑Sense Activation</em></td><td>Synchronicity spotting, symbolic decoding</td></tr>
+      <tr><td>1,000 – 9,999</td><td><strong>Arahant</strong></td><td>Adept's <em>Shadow‑Integration & Resilience</em></td><td>Lucid dreaming, inner‑archetype dialogues</td></tr>
+      <tr><td>10,000 – 99,999</td><td><strong>Bodhisattva</strong></td><td>Visionary <em>Non‑Local Consciousness Access</em></td><td>Telepathic inklings, transpersonal insights</td></tr>
+      <tr><td>100,000 – 999,999</td><td><strong>Buddha</strong></td><td>Master's <em>Embodied Co‑Creative Flow</em></td><td>Healing presence, guided co‑creation with Source</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 2. Pre-Retrieval Guidance -->
+<section class="section" id="preRetrievalGuidance">
+  <h2>Pre-Retrieval Guidance</h2>
+  <p><em>Optional Preparations (brief checklist):</em></p>
+  <ul class="bullet">
+    <li>Warm shower (mind purification)</li>
+    <li>2–4 hr light fast (clarity)</li>
+    <li>5 min asanas & pranayama (energy alignment)</li>
+    <li>Plain herbal tea (no sugar/milk)</li>
+    <li>30 sec gratitude & surrender (devotional opening)</li>
+  </ul>
+</section>
+
+<!-- 3. Retrieval Screen -->
+<section class="section" id="retrievalSection">
+  <h2>Revelatory Retrieval</h2>
+  <p style="text-align:center; font-weight:600; font-size:1.1rem;" id="stageNameDisplay">Stage: —</p>
+  <p style="max-width:600px; margin-left:auto; margin-right:auto; font-style:italic; text-align:center; user-select:none;">
+    Sit quietly. Breathe deeply. Intone:<br/>
+    <code>"I surrender to the One Source. Reveal the <span id="primeIndexDisplay">n</span>-th prime."</code><br/>
+    Observe symbols, digits, or impressions.
+  </p>
+
+  <label for="difficultySelect" style="display:block; max-width:350px; margin:20px auto 0 auto; user-select:none;">Select Your Stage</label>
+  <select id="difficultySelect" aria-label="Choose your spiritual stage">
+    <option value="1">Sādhyāka (0 – 99)</option>
+    <option value="2">Bhikṣu (100 – 999)</option>
+    <option value="3">Arahant (1,000 – 9,999)</option>
+    <option value="4">Bodhisattva (10,000 – 99,999)</option>
+    <option value="5">Buddha (100,000 – 999,999)</option>
+  </select>
+
+  <button id="startRetrievalBtn">Summon My Prime</button>
+
+  <p id="retrievalStatus" style="text-align:center; margin-top:1em; font-weight:600; color:#aaf;"></p>
+
+  <div id="timerSection" style="display:none; text-align:center; margin-top:1em; color:#777; user-select:none;">
+    Silent timer: <span id="timerCountdown">0</span> sec
   </div>
 
-  <div class="section">
-    <h3>Choose Your Path</h3>
-    <label for="difficulty">Stage:</label>
-    <select id="difficulty" onchange="updateDifficultyInfo()">
-      <option value="1">Sādhyāka (1–99)</option>
-      <option value="2">Bhikṣu (100–999)</option>
-      <option value="3">Arahant (1,000–9,999)</option>
-      <option value="4">Bodhisattva (10,000–99,999)</option>
-      <option value="5">Buddha (100,000–999,999)</option>
-    </select>
-    <p id="difficultyInfo">Select a stage to begin practice.</p>
+  <div id="inputSection" style="display:none; margin-top:1.5em; max-width:350px; margin-left:auto; margin-right:auto;">
+    <label for="userGuess" style="display:block; margin-bottom:5px;">Enter the prime number you received:</label>
+    <input type="number" id="userGuess" placeholder="Your recalled prime number" autocomplete="off" />
+    <button id="testSignalBtn">Test My Signal!</button>
   </div>
+</section>
 
-  <div class="section">
-    <h3>Pre‑Retrieval Guidance (Optional)</h3>
-    <ul class="bullet">
-      <li>2–4 hr light fast</li>
-      <li>5–10 min movement & breath</li>
-      <li>Plain tea</li>
-      <li>30 sec gratitude and surrender</li>
-    </ul>
+<!-- 4. Results Screen -->
+<section class="section" id="resultsSection" style="display:none;">
+  <h2>Performance Feedback</h2>
+  <div id="results"></div>
+  <div class="encourage">Stay the path—each session sharpens your receiver.</div>
+  <p style="text-align:center; margin-top:1em;">
+    <button id="shareBtn">Share My Results</button>
+  </p>
+</section>
+
+<!-- 5. Dashboard & Community -->
+<section class="section" id="dashboardSection">
+  <h2>Session History & Trend</h2>
+  <div id="historyContainer" aria-live="polite" aria-label="History of your retrieval sessions">
+    No sessions recorded yet.
   </div>
+  <canvas id="trendCanvas" width="700" height="150" aria-label="Trend graph showing percentage closeness over time"></canvas>
+</section>
 
-  <div class="section">
-    <h3>Revelatory Retrieval</h3>
-    <p class="encourage">Sit quietly. Breathe. Intone:<br><em>“I surrender to the One Source. Reveal the *n*-th prime.”</em></p>
-    <button onclick="generatePrimeOrder()">Summon My Prime</button>
-    <div id="primeDisplay"></div>
-  </div>
+<!-- 6. Footer -->
+<footer>
+  <p><em>Science Note:</em> Primes underlie cryptography, randomness, and the hidden symmetries of nature.</p>
+  <p><em>Spiritual Note:</em> Retrieving primes through gratitude and surrender aligns consciousness with reality's deep code.</p>
+</footer>
 
-  <div class="section" id="inputSection" style="display:none;">
-    <p>Enter the prime number you received:</p>
-    <input type="number" id="userGuess" placeholder="Your recalled prime number">
-    <button onclick="checkGuess()">Test My Signal</button>
-  </div>
+<script>
+  // Prime generation with sieve of Eratosthenes (up to 1 million)
+  const primeList = [];
 
-  <div class="section" id="resultsSection" style="display:none;">
-    <div id="results"></div>
-    <div class="encourage">Stay the path—each session sharpens your receiver.</div>
-  </div>
+  function generatePrimesUpTo(limit) {
+    console.log("Generating primes up to", limit);
+    const sieve = new Array(limit + 1).fill(true);
+    sieve[0] = sieve[1] = false;
 
-  <script>
-    const primeList = [];
-    function generatePrimesUpTo(limit) {
-      const sieve = new Array(limit + 1).fill(true);
-      sieve[0] = sieve[1] = false;
-      for (let i = 2; i * i <= limit; i++) {
-        if (sieve[i]) {
-          for (let j = i * i; j <= limit; j += i) {
-            sieve[j] = false;
-          }
+    for (let i = 2; i * i <= limit; i++) {
+      if (sieve[i]) {
+        for (let j = i * i; j <= limit; j += i) {
+          sieve[j] = false;
         }
       }
-      for (let i = 2; i <= limit; i++) {
-        if (sieve[i]) primeList.push(i);
+    }
+
+    for (let i = 2; i <= limit; i++) {
+      if (sieve[i]) primeList.push(i);
+    }
+    console.log("Generated", primeList.length, "primes");
+  }
+
+  // Generate primes up to 1 million
+  generatePrimesUpTo(1000000);
+
+  // Stage data: ranges based on prime VALUES, not indices
+  const stages = {
+    1: { name: "Sādhyāka", range: [0, 99] },
+    2: { name: "Bhikṣu", range: [100, 999] },
+    3: { name: "Arahant", range: [1000, 9999] },
+    4: { name: "Bodhisattva", range: [10000, 99999] },
+    5: { name: "Buddha", range: [100000, 999999] }
+  };
+
+  // State
+  let selectedPrime = null;
+  let selectedPrimeIndex = null;
+  let currentStage = 1;
+  let silentTimer = null;
+  let sessionHistory = [];
+
+  // Try to load from localStorage, fallback to empty array
+  try {
+    const stored = localStorage.getItem('niceSessionHistory');
+    if (stored) {
+      sessionHistory = JSON.parse(stored);
+    }
+  } catch (e) {
+    console.log('Could not load session history from localStorage');
+    sessionHistory = [];
+  }
+
+  // Elements
+  const difficultySelect = document.getElementById('difficultySelect');
+  const stageNameDisplay = document.getElementById('stageNameDisplay');
+  const primeIndexDisplay = document.getElementById('primeIndexDisplay');
+  const startRetrievalBtn = document.getElementById('startRetrievalBtn');
+  const retrievalStatus = document.getElementById('retrievalStatus');
+  const inputSection = document.getElementById('inputSection');
+  const userGuessInput = document.getElementById('userGuess');
+  const testSignalBtn = document.getElementById('testSignalBtn');
+  const resultsSection = document.getElementById('resultsSection');
+  const resultsDiv = document.getElementById('results');
+  const shareBtn = document.getElementById('shareBtn');
+  const historyContainer = document.getElementById('historyContainer');
+  const trendCanvas = document.getElementById('trendCanvas');
+  const timerSection = document.getElementById('timerSection');
+  const timerCountdown = document.getElementById('timerCountdown');
+
+  // Save to localStorage
+  function saveSession(session) {
+    try {
+      sessionHistory.push(session);
+      localStorage.setItem('niceSessionHistory', JSON.stringify(sessionHistory));
+    } catch (e) {
+      console.log('Could not save to localStorage');
+    }
+  }
+
+  // Initialize ambient canvas
+  function initAmbientCanvas() {
+    const canvas = document.getElementById('ambientCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const particles = [];
+    const stars = [];
+    const galaxies = [];
+    const numParticles = 200;
+    const numStars = 300;
+    const numGalaxies = 5;
+
+    // Create particles (radiating from center)
+    for (let i = 0; i < numParticles; i++) {
+      const angle = Math.random() * 2 * Math.PI;
+      const speed = Math.random() * 4 + 2;
+      particles.push({
+        x: centerX,
+        y: centerY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: Math.random() * 3 + 1.5,
+        opacity: Math.random() * 0.6 + 0.4,
+        life: 0,
+        maxLife: 80,
+        color: Math.random() < 0.5 ? '255, 215, 0' : '255, 255, 255'
+      });
+    }
+
+    // Create stars (radiating with subtle motion)
+    for (let i = 0; i < numStars; i++) {
+      const dist = Math.random() * 300 + 50;
+      const angle = Math.random() * 2 * Math.PI;
+      stars.push({
+        x: centerX + Math.cos(angle) * dist,
+        y: centerY + Math.sin(angle) * dist,
+        vx: Math.cos(angle) * 0.2,
+        vy: Math.sin(angle) * 0.2,
+        size: Math.random() * 3 + 1,
+        opacity: Math.random() * 0.6 + 0.4,
+        twinkle: Math.random() * 100,
+        color: Math.random() < 0.7 ? '255, 255, 255' : Math.random() < 0.9 ? '200, 200, 255' : '255, 215, 0'
+      });
+    }
+
+    // Create galaxies (spirals radiating from center)
+    for (let i = 0; i < numGalaxies; i++) {
+      const dist = Math.random() * 200 + 100;
+      const angle = Math.random() * 2 * Math.PI;
+      galaxies.push({
+        x: centerX + Math.cos(angle) * dist,
+        y: centerY + Math.sin(angle) * dist,
+        vx: Math.cos(angle) * 0.5,
+        vy: Math.sin(angle) * 0.5,
+        size: Math.random() * 80 + 60,
+        rotation: Math.random() * 2 * Math.PI,
+        speed: (Math.random() * 0.03 + 0.02) * (Math.random() > 0.5 ? 1 : -1)
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw central light source
+      const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 150);
+      gradient.addColorStop(0, 'rgba(255, 245, 200, 1)');
+      gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.8)');
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 150 + Math.sin(Date.now() / 800) * 20, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Draw galaxies
+      galaxies.forEach(galaxy => {
+        galaxy.x += galaxy.vx;
+        galaxy.y += galaxy.vy;
+        if (Math.hypot(galaxy.x - centerX, galaxy.y - centerY) > canvas.width) {
+          const angle = Math.random() * 2 * Math.PI;
+          galaxy.x = centerX + Math.cos(angle) * 100;
+          galaxy.y = centerY + Math.sin(angle) * 100;
+          galaxy.vx = Math.cos(angle) * 0.5;
+          galaxy.vy = Math.sin(angle) * 0.5;
+        }
+        ctx.save();
+        ctx.translate(galaxy.x, galaxy.y);
+        ctx.rotate(galaxy.rotation);
+        const spiralGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, galaxy.size);
+        spiralGradient.addColorStop(0, 'rgba(200, 180, 255, 0.8)');
+        spiralGradient.addColorStop(0.5, 'rgba(150, 150, 255, 0.5)');
+        spiralGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = spiralGradient;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        for (let i = 0; i < 720; i += 10) {
+          const rad = (i * Math.PI) / 180;
+          const r = (galaxy.size * i) / 720;
+          ctx.lineTo(r * Math.cos(rad), r * Math.sin(rad));
+        }
+        ctx.fill();
+        ctx.restore();
+        galaxy.rotation += galaxy.speed / 60;
+      });
+
+      // Draw stars
+      stars.forEach(star => {
+        star.x += star.vx;
+        star.y += star.vy;
+        if (Math.hypot(star.x - centerX, star.y - centerY) > canvas.width) {
+          const angle = Math.random() * 2 * Math.PI;
+          star.x = centerX + Math.cos(angle) * 50;
+          star.y = centerY + Math.sin(angle) * 50;
+          star.vx = Math.cos(angle) * 0.2;
+          star.vy = Math.sin(angle) * 0.2;
+        }
+        const twinkle = Math.sin((Date.now() + star.twinkle) / 100) * 0.4 + star.opacity;
+        ctx.fillStyle = `rgba(${star.color}, ${twinkle})`;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+
+      // Draw and update particles
+      particles.forEach(particle => {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.life += 1;
+        if (particle.life > particle.maxLife) {
+          particle.x = centerX;
+          particle.y = centerY;
+          particle.life = 0;
+          const angle = Math.random() * 2 * Math.PI;
+          const speed = Math.random() * 4 + 2;
+          particle.vx = Math.cos(angle) * speed;
+          particle.vy = Math.sin(angle) * speed;
+        }
+        ctx.fillStyle = `rgba(${particle.color}, ${particle.opacity * (1 - particle.life / particle.maxLife)})`;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  }
+
+  // Init
+  function init() {
+    currentStage = parseInt(difficultySelect.value);
+    stageNameDisplay.textContent = `Stage: ${stages[currentStage].name}`;
+    primeIndexDisplay.textContent = "n";
+    retrievalStatus.textContent = "";
+    inputSection.style.display = 'none';
+    resultsSection.style.display = 'none';
+    updateHistoryUI();
+    drawTrendChart();
+    initAmbientCanvas();
+  }
+
+  // Update history display
+  function updateHistoryUI() {
+    if (sessionHistory.length === 0) {
+      historyContainer.innerHTML = 'No sessions recorded yet.';
+      return;
+    }
+
+    let html = '<strong>Recent Sessions:</strong><br>';
+    const recent = sessionHistory.slice(-10).reverse();
+    recent.forEach((session, i) => {
+      html += `${recent.length - i}. Stage ${session.stage} - ${session.primeIndex}th prime = ${session.actualPrime} | Guess: ${session.guess} | Closeness: ${session.closeness.toFixed(1)}%<br>`;
+    });
+    historyContainer.innerHTML = html;
+  }
+
+  // Draw trend chart
+  function drawTrendChart() {
+    const ctx = trendCanvas.getContext('2d');
+    const width = trendCanvas.width;
+    const height = trendCanvas.height;
+
+    // Clear canvas
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0, 0, width, height);
+
+    if (sessionHistory.length === 0) {
+      ctx.fillStyle = '#777';
+      ctx.font = '16px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('No data yet - start your first session!', width/2, height/2);
+      return;
+    }
+
+    // Draw grid
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 10; i++) {
+      const y = (height - 40) * i / 10 + 20;
+      ctx.beginPath();
+      ctx.moveTo(40, y);
+      ctx.lineTo(width - 20, y);
+      ctx.stroke();
+    }
+
+    // Draw trend line
+    if (sessionHistory.length > 1) {
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      const recent = sessionHistory.slice(-20);
+      recent.forEach((session, i) => {
+        const x = 40 + (width - 60) * i / (recent.length - 1);
+        const y = height - 20 - (height - 40) * session.closeness / 100;
+
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      });
+      ctx.stroke();
+
+      // Draw points
+      ctx.fillStyle = '#ffd700';
+      recent.forEach((session, i) => {
+        const x = 40 + (width - 60) * i / (recent.length - 1);
+        const y = height - 20 - (height - 40) * session.closeness / 100;
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+    }
+
+    // Draw labels
+    ctx.fillStyle = '#aaa';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 10; i++) {
+      const y = (height - 40) * i / 10 + 25;
+      ctx.fillText(`${100 - i * 10}%`, 35, y);
+    }
+  }
+
+  init();
+
+  difficultySelect.addEventListener('change', () => {
+    currentStage = parseInt(difficultySelect.value);
+    stageNameDisplay.textContent = `Stage: ${stages[currentStage].name}`;
+    retrievalStatus.textContent = "";
+    primeIndexDisplay.textContent = "n";
+    inputSection.style.display = 'none';
+    resultsSection.style.display = 'none';
+    clearTimer();
+  });
+
+  startRetrievalBtn.addEventListener('click', () => {
+    console.log("Summon Prime clicked, current stage:", currentStage);
+
+    retrievalStatus.textContent = "Selecting your prime...";
+    inputSection.style.display = 'none';
+    resultsSection.style.display = 'none';
+    userGuessInput.value = "";
+    clearTimer();
+
+    const [minVal, maxVal] = stages[currentStage].range;
+    console.log("Range for stage", currentStage, ":", minVal, "to", maxVal);
+
+    // Filter primes that fall within the stage's VALUE range
+    const validPrimes = [];
+    primeList.forEach((prime, index) => {
+      if (prime >= minVal && prime <= maxVal) {
+        validPrimes.push({
+          value: prime,
+          index: index + 1
+        });
       }
+    });
+
+    if (validPrimes.length === 0) {
+      retrievalStatus.textContent = "No primes found in this stage range.";
+      console.log("No primes found in stage range!");
+      return;
     }
 
-    generatePrimesUpTo(1000000);
+    // Randomly select a prime from the valid primes in this stage
+    const randomPrime = validPrimes[Math.floor(Math.random() * validPrimes.length)];
+    selectedPrime = randomPrime.value;
+    selectedPrimeIndex = randomPrime.index;
 
-    const difficultyRanges = {
-      1: [1, 99],
-      2: [100, 999],
-      3: [1000, 9999],
-      4: [10000, 99999],
-      5: [100000, 999999]
+    console.log("Selected prime:", selectedPrime, "at index:", selectedPrimeIndex);
+
+    // Show the ordinal position and allow user to enter their guess
+    primeIndexDisplay.textContent = selectedPrimeIndex;
+    inputSection.style.display = "block";
+    retrievalStatus.textContent = `You are seeking the ${selectedPrimeIndex}th prime. What number do you receive?`;
+
+    // Focus on the input field
+    userGuessInput.focus();
+  });
+
+  function clearTimer() {
+    if (silentTimer) {
+      clearInterval(silentTimer);
+      silentTimer = null;
+      timerSection.style.display = "none";
+    }
+  }
+
+  testSignalBtn.addEventListener('click', () => {
+    const guess = parseInt(userGuessInput.value);
+    if (!selectedPrime || isNaN(guess) || guess <= 0) {
+      alert("Please enter a valid positive number.");
+      return;
+    }
+
+    const actual = selectedPrime;
+    const absError = Math.abs(guess - actual);
+
+    // Calculate closeness percentage (higher is better)
+    const percentCloseness = Math.max(0, (1 - absError / actual) * 100);
+
+    // Calculate statistical significance compared to random chance
+    const [minVal, maxVal] = stages[currentStage].range;
+
+    // For random chance baseline, consider the range of possible values
+    const rangeSize = maxVal - minVal + 1;
+    const expectedRandomError = rangeSize / 3;
+
+    // Calculate how much better (or worse) this guess is compared to random
+    const randomCloseness = Math.max(0, (1 - expectedRandomError / actual) * 100);
+    const improvementOverRandom = percentCloseness - randomCloseness;
+
+    // Z-score calculation (how many standard deviations from random)
+    const stdDev = rangeSize / 6;
+    const zScore = (expectedRandomError - absError) / stdDev;
+
+    // Convert z-score to percentile (statistical significance)
+    const significance = Math.max(0, Math.min(100, 50 + (zScore * 15)));
+
+    console.log("Calculation details:");
+    console.log("Actual prime:", actual);
+    console.log("Guess:", guess);
+    console.log("Absolute error:", absError);
+    console.log("Stage range:", minVal, "to", maxVal);
+    console.log("Expected random error:", expectedRandomError);
+    console.log("Z-score:", zScore);
+
+    // Create session record
+    const session = {
+      stage: currentStage,
+      stageName: stages[currentStage].name,
+      primeIndex: selectedPrimeIndex,
+      actualPrime: actual,
+      guess: guess,
+      absError: absError,
+      closeness: percentCloseness,
+      randomBaseline: randomCloseness,
+      improvementOverRandom: improvementOverRandom,
+      significance: significance,
+      timestamp: new Date().toISOString()
     };
 
-    const descriptions = {
-      1: "Sādhyāka – Mind‑Clearing & Stability",
-      2: "Bhikṣu – Subtle‑Sense Activation",
-      3: "Arahant – Shadow‑Integration & Resilience",
-      4: "Bodhisattva – Non‑Local Consciousness Access",
-      5: "Buddha – Embodied Co‑Creative Flow"
-    };
+    saveSession(session);
 
-    let selectedPrime = null;
+    // Show results
+    let resultHtml = `
+      <strong>Target:</strong> ${selectedPrimeIndex}th prime = ${actual}<br>
+      <strong>Your Guess:</strong> ${guess}<br>
+      <strong>Absolute Error:</strong> ${absError}<br>
+      <strong>Closeness:</strong> ${percentCloseness.toFixed(1)}%<br>
+      <strong>Random Baseline:</strong> ${randomCloseness.toFixed(1)}%<br>
+      <strong>Improvement over Random:</strong> ${improvementOverRandom > 0 ? '+' : ''}${improvementOverRandom.toFixed(1)}%<br>
+      <strong>Statistical Significance:</strong> ${significance.toFixed(1)}%<br>
+      <strong>Stage:</strong> ${stages[currentStage].name}
+    `;
 
-    function updateDifficultyInfo() {
-      const diff = document.getElementById('difficulty').value;
-      document.getElementById('difficultyInfo').textContent = descriptions[diff];
+    if (absError === 0) {
+      resultHtml += "<br><br><strong style='color: #0f0;'>🎯 PERFECT HIT! Extraordinary precision!</strong>";
+    } else if (percentCloseness > 90) {
+      resultHtml += "<br><br><strong style='color: #0f0;'>⚡ Exceptional accuracy! Your intuition is highly attuned.</strong>";
+    } else if (percentCloseness > 70) {
+      resultHtml += "<br><br><strong style='color: #ff0;'>🔥 Strong signal detected! Keep practicing.</strong>";
+    } else if (improvementOverRandom > 0) {
+      resultHtml += "<br><br><strong style='color: #fa0;'>📈 Above random chance! Your receiver is active.</strong>";
+    } else {
+      resultHtml += "<br><br><strong style='color: #aaa;'>🌱 Every session builds your capacity. Trust the process.</strong>";
     }
 
-    function generatePrimeOrder() {
-      const diff = document.getElementById('difficulty').value;
-      const [minVal, maxVal] = difficultyRanges[diff];
-      const candidates = primeList.filter(p => p >= minVal && p <= maxVal);
-      const randomIndex = Math.floor(Math.random() * candidates.length);
-      selectedPrime = candidates[randomIndex];
-      const primeOrder = primeList.indexOf(selectedPrime) + 1;
-      document.getElementById('primeDisplay').textContent = `Your index (n) is set: ${primeOrder}`;
-      document.getElementById('inputSection').style.display = 'block';
-      document.getElementById('resultsSection').style.display = 'none';
+    resultsDiv.innerHTML = resultHtml;
+    resultsSection.style.display = 'block';
+
+    updateHistoryUI();
+    drawTrendChart();
+  });
+
+  shareBtn.addEventListener('click', () => {
+    if (sessionHistory.length === 0) {
+      alert("No sessions to share yet!");
+      return;
     }
 
-    function checkGuess() {
-      const guess = parseInt(document.getElementById('userGuess').value);
-      if (!selectedPrime || isNaN(guess)) return;
-      const diff = Math.abs(selectedPrime - guess);
-      const actual = selectedPrime;
-      const closeness = ((1 - diff / actual) * 100).toFixed(2);
+    const lastSession = sessionHistory[sessionHistory.length - 1];
+    const shareText = `I just practiced NICE Prime-Retrieval! 🧠✨
+Stage: ${lastSession.stageName}
+Target: ${lastSession.actualPrime} (${lastSession.primeIndex}th prime)
+My guess: ${lastSession.guess}
+Closeness: ${lastSession.closeness.toFixed(1)}%
+Train your intuition: https://example.com/nice-prime-app`;
 
-      const randChance = (1 / (difficultyRanges[document.getElementById('difficulty').value][1] - difficultyRanges[document.getElementById('difficulty').value][0] + 1) * 100).toFixed(6);
-
-      const link = `${window.location.origin}${window.location.pathname}?guess=${guess}&actual=${selectedPrime}`;
-
-      document.getElementById('results').innerHTML =
-        `True Prime: <code>${actual}</code><br>` +
-        `Your Guess: <code>${guess}</code><br>` +
-        `Absolute Error: <code>${diff}</code><br>` +
-        `% Closeness: <code>${closeness}%</code><br>` +
-        `Random Guess Chance: <code>${randChance}%</code><br><br>` +
-        `Sharable Result: <a href='${link}' target='_blank'>${link}</a>`;
-
-      document.getElementById('resultsSection').style.display = 'block';
+    if (navigator.share) {
+      navigator.share({
+        title: 'NICE Prime-Retrieval Results',
+        text: shareText
+      });
+    } else {
+      navigator.clipboard.writeText(shareText).then(() => {
+        alert('Results copied to clipboard!');
+      }).catch(() => {
+        alert('Share text:\n\n' + shareText);
+      });
     }
-  </script>
+  });
+</script>
 </body>
 </html>
